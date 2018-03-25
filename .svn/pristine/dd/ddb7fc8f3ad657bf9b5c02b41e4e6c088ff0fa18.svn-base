@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.IDao.FileMapper" >
+  <resultMap id="BaseResultMap" type="com.tm.domain.UploadFile" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="managerNo" property="managerno" jdbcType="VARCHAR" />
+    <result column="uploadTime" property="uploadtime" jdbcType="TIMESTAMP" />
+    <result column="fileName" property="filename" jdbcType="VARCHAR" />
+    <result column="file_group" property="fileGroup" jdbcType="INTEGER" />
+    <result column="file_people" property="filePeople" jdbcType="INTEGER" />
+    <result column="checkPeople" property="checkPeople" jdbcType="VARCHAR" />
+    <result column="reviewPeople" property="reviewPeople" jdbcType="VARCHAR" />
+    <result column="makeSurePeople" property="makeSurePeople" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, managerNo, uploadTime, fileName,file_group,file_people,checkPeople,reviewPeople,makeSurePeople,status
+  </sql>
+  <select id="getFiles" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tm_file 
+<!--     where 1=1 -->
+    <include refid="queryWhere"/>
+    order by uploadTime desc limit #{pageIndex},#{pageSize}
+  </select>
+
+<!--    <select id="getFiles" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tm_file   
+    <include refid="queryWherestate"/>
+    order by uploadTime limit #{pageIndex},#{pageSize}
+  </select>  -->
+
+<!--     from tm_file where ${fieldName} = #{managerNo} 
+    <if test="fieldName != managerNo">
+				and status = #{status}
+	</if>	 -->
+
+  <select id="getFileCount" resultType="java.lang.Integer">select 
+    count(*)
+    from tm_file where 1=1
+    <if test="fieldName != null">
+    	and ${fieldName} = #{managerNo} 
+    </if>
+    <if test="fieldName != null">
+				and status = #{status}
+	</if>	
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" ></include>
+    from tm_file
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByFileName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" ></include>
+    from tm_file
+    where fileName = #{fileName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tm_file
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+   <delete id="deleteFile" parameterType="java.lang.Integer" >
+    delete from tm_file
+    <where>
+			<if test="ids != null and ids.size != 0">
+                and id in
+                <foreach collection="ids" item="id"
+                    index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+		</where>
+  </delete>
+  <insert id="insert" parameterType="com.tm.domain.UploadFile" >
+    insert into tm_file (id, managerNo, uploadTime, 
+      fileName,file_group,file_people,checkPeople,reviewPeople,makeSurePeople,status)
+    values (#{id,jdbcType=VARCHAR}, #{managerno,jdbcType=VARCHAR}, #{uploadtime,jdbcType=TIMESTAMP}, 
+      #{filename,jdbcType=VARCHAR},#{fileGroup},#{filePeople},#{checkPeople,jdbcType=VARCHAR}, #{reviewPeople,jdbcType=VARCHAR}, #{makeSurePeople,jdbcType=VARCHAR},#{status})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tm.domain.UploadFile" >
+    update tm_file
+    <set >
+      <if test="managerno != null" >
+        managerNo = #{managerno,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadtime != null" >
+        uploadTime = #{uploadtime,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="fenzu != null" >
+        fenZu = #{fenzu,jdbcType=VARCHAR},
+      </if> -->
+      <if test="filename != null" >
+        fileName = #{filename,jdbcType=VARCHAR},
+      </if>
+        <if test="checkPeople != null" >
+        checkPeople = #{checkPeople,jdbcType=VARCHAR},
+      </if>
+        <if test="reviewPeople != null" >
+        reviewPeople = #{reviewPeople,jdbcType=VARCHAR},
+      </if>
+        <if test="makeSurePeople != null" >
+        makeSurePeople = #{makeSurePeople,jdbcType=VARCHAR},
+      </if>
+        <if test="status != null" >
+        status = #{status},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tm.domain.UploadFile" >
+    update tm_file
+    set managerNo = #{managerno,jdbcType=VARCHAR},
+      uploadTime = #{uploadtime,jdbcType=TIMESTAMP},
+<!--       fenZu = #{fenzu,jdbcType=VARCHAR}, -->
+      fileName = #{filename,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <sql id="queryWhere">
+		<where>  	
+			<if test="fileGroup != null " >
+				and file_group = #{fileGroup}
+			</if>
+<!--    			<if test="filePeople != null">
+				and file_people = #{filePeople}
+			</if>  		
+		<if test="status != null">
+				and status = #{status}
+			</if>  --> 		
+<!--   			<if test="managerNo != null">
+				and  ${fieldName} = #{managerNo}
+			</if> -->
+<!-- 		<if test="uploadtime != null">
+				and  ${uploadtime} = #{uploadtime}
+		</if> --> 	
+				
+		<if test="fieldName != null">
+				and  ${fieldName} = #{managerNo}
+		</if> 		
+			
+		</where>
+  </sql>
+		
+<!--   <sql id="queryWherestate">
+		<where>
+    		 <if test="filePeople != null">
+				and file_people = #{filePeople}
+			</if>
+		</where>
+	</sql>  -->
+	
+</mapper>

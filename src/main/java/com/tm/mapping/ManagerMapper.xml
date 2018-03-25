@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.IDao.ManagerMapper" >
+  <resultMap id="BaseResultMap" type="com.tm.domain.Manager" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="managerNo" property="managerno" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, managerNo, password
+  </sql>
+  <select id="getManagers" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tm_manager
+  </select>
+  
+  <select id="getManagersByNoOrName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tm_manager where managerNo = #{param,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByManagerNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tm_manager
+    where managerNo = #{managerNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tm_manager
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tm_manager
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByManagerNo" parameterType="java.lang.String" >
+    delete from tm_manager
+    where managerNo = #{managerNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tm.domain.Manager" >
+    insert into tm_manager (id, managerNo, password)
+    values (#{id,jdbcType=VARCHAR}, #{managerno,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tm.domain.Manager" >
+    insert into tm_manager
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="managerno != null" >
+        managerNo,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="managerno != null" >
+        #{managerno,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tm.domain.Manager" >
+    update tm_manager
+    <set >
+      <if test="managerno != null" >
+        managerNo = #{managerno,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByManagerNo" parameterType="com.tm.domain.Manager" >
+    update tm_manager
+    <set >
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where managerNo = #{managerno,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tm.domain.Manager" >
+    update tm_manager
+    set managerNo = #{managerno,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
